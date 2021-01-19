@@ -5,14 +5,18 @@ import OrderForm from "../../components/OrderForm/OrderForm";
 import { apiCalls } from "../../apiCalls";
 
 class App extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
       orders: [],
     };
   }
 
   componentDidMount() {
+    this.getAllOrders();
+  }
+
+  getAllOrders() {
     let updateOrders;
     apiCalls
       .getOrders()
@@ -27,11 +31,18 @@ class App extends Component {
       .catch((err) => console.error("Error fetching:", err));
   }
 
-  submitOrder(orderName, orderIngredients) {
-    apiCalls.addOrder(orderName, orderIngredients);
-  }
+  submitOrder = (orderName, orderIngredients) => {
+    apiCalls.addOrder(orderName, orderIngredients).then(() => {
+      this.setState({
+        orders: [
+          ...this.state.orders,
+          { name: orderName, ingredients: orderIngredients },
+        ],
+      });
+    });
+  };
 
-  filterOrder(name, ingredients) {
+  filterOrder = (name, ingredients) => {
     console.log(name, ingredients);
     if (name.length && ingredients.length) {
       this.submitOrder(name, ingredients);
@@ -40,7 +51,7 @@ class App extends Component {
     } else if (ingredients.length && !name.legnth) {
       alert("Please add a name to your order.");
     }
-  }
+  };
 
   render() {
     return (
@@ -50,6 +61,7 @@ class App extends Component {
           <OrderForm
             submitOrder={this.submitOrder}
             filterOrder={this.filterOrder}
+            updateOrders={this.updateOrders}
           />
         </header>
 
