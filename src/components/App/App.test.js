@@ -10,27 +10,65 @@ import { apiCalls } from "../../apiCalls";
 jest.mock("../../apiCalls");
 
 describe("App", () => {
-  // beforeEach(() => {
-  //   apiCalls.getOrders.mockResolvedValue([
-  //     { id: 1, name: "Pat", ingredients: ["beans", "lettuce", "carnitas"] },
-  //     {
-  //       id: 2,
-  //       name: "Sam",
-  //       ingredients: ["steak", "pico de gallo", "lettuce", "carnitas"],
-  //     },
-  //   ]);
-  // });
   it("Should get all data on load", async () => {
-    apiCalls.getOrders.mockResolvedValue([
-      { id: 1, name: "Pat", ingredients: ["beans", "lettuce", "carnitas"] },
-      {
-        id: 2,
-        name: "Sam",
-        ingredients: ["steak", "pico de gallo", "lettuce", "carnitas"],
-      },
-    ]);
+    apiCalls.getOrders.mockResolvedValue({
+      orders: [
+        { id: 1, name: "Pat", ingredients: ["beans", "lettuce", "carnitas"] },
+        {
+          id: 2,
+          name: "Sam",
+          ingredients: ["steak", "pico de gallo", "lettuce", "carnitas"],
+        },
+      ],
+    });
 
     render(<App />);
     await waitFor(() => expect(apiCalls.getOrders).toHaveBeenCalledTimes(1));
+  });
+
+  it("Should render orders correctly", async () => {
+    apiCalls.getOrders.mockResolvedValue({
+      orders: [
+        { id: 1, name: "Pat", ingredients: ["beans", "lettuce", "carnitas"] },
+        {
+          id: 2,
+          name: "Sam",
+          ingredients: ["steak", "pico de gallo", "lettuce", "carnitas"],
+        },
+      ],
+    });
+
+    render(<App />);
+
+    await waitFor(() => expect(screen.getByText("Sam")));
+  });
+
+  it("Should be able to add an order", async () => {
+    apiCalls.getOrders.mockResolvedValue({
+      orders: [
+        { id: 1, name: "Pat", ingredients: ["beans", "lettuce", "carnitas"] },
+        {
+          id: 2,
+          name: "Sam",
+          ingredients: ["steak", "pico de gallo", "lettuce", "carnitas"],
+        },
+      ],
+    });
+
+    apiCalls.addOrder.mockResolvedValue();
+
+    render(<App />);
+
+    const nameInput = screen.getByPlaceholderText("Name");
+    const beansButton = screen.getByText("beans");
+    const steakButton = screen.getByText("steak");
+    const submitOrderButton = screen.getByText("Submit Order");
+
+    userEvent.type(nameInput, "Cooper");
+    userEvent.click(beansButton);
+    userEvent.click(steakButton);
+    userEvent.click(submitOrderButton);
+
+    await waitFor(() => expect(screen.getByText("Cooper")));
   });
 });

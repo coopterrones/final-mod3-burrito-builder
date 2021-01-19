@@ -21,6 +21,7 @@ class App extends Component {
     apiCalls
       .getOrders()
       .then((data) => {
+        console.log(data);
         updateOrders = data.orders.map((order) => {
           return order;
         });
