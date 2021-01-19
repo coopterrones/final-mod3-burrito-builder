@@ -72,7 +72,7 @@ describe("App", () => {
     await waitFor(() => expect(screen.getByText("Cooper")));
   });
 
-  it("Should filter order inputs to ensure that there is no post without name and ingredients", async () => {
+  it("Should filter order inputs to ensure that there is no post without ingredients", async () => {
     apiCalls.getOrders.mockResolvedValue({
       orders: [
         { id: 1, name: "Pat", ingredients: ["beans", "lettuce", "carnitas"] },
@@ -90,6 +90,33 @@ describe("App", () => {
     const nameInput = screen.getByPlaceholderText("Name");
 
     userEvent.type(nameInput, "Cooper");
+    userEvent.click(submitOrderButton);
+
+    const name = screen.queryByText("Cooper");
+
+    await waitFor(() => expect(name).toBeNull());
+  });
+
+  it("Should filter order inputs to ensure that there is no post without a name", async () => {
+    apiCalls.getOrders.mockResolvedValue({
+      orders: [
+        { id: 1, name: "Pat", ingredients: ["beans", "lettuce", "carnitas"] },
+        {
+          id: 2,
+          name: "Sam",
+          ingredients: ["steak", "pico de gallo", "lettuce", "carnitas"],
+        },
+      ],
+    });
+
+    render(<App />);
+
+    const submitOrderButton = screen.getByText("Submit Order");
+    const beansButton = screen.getByText("beans");
+    const steakButton = screen.getByText("steak");
+
+    userEvent.click(beansButton);
+    userEvent.click(steakButton);
     userEvent.click(submitOrderButton);
 
     const name = screen.queryByText("Cooper");
