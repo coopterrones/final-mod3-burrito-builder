@@ -1,5 +1,5 @@
 import React from "react";
-import { screen, render } from "@testing-library/react";
+import { screen, render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import OrderForm from "../OrderForm/OrderForm";
 import userEvent from "@testing-library/user-event";
@@ -23,6 +23,7 @@ describe("Order Form", () => {
 
     expect(nameInput).toBeInTheDocument();
     expect(beansButton).toBeInTheDocument();
+    expect(steakButton).toBeInTheDocument();
     expect(carnitasButton).toBeInTheDocument();
     expect(sofritasButton).toBeInTheDocument();
     expect(lettuceButton).toBeInTheDocument();
@@ -31,6 +32,20 @@ describe("Order Form", () => {
     expect(jalapenosButton).toBeInTheDocument();
     expect(cilantroButton).toBeInTheDocument();
     expect(sourCreamButton).toBeInTheDocument();
+    expect(orderDisplay).toBeInTheDocument();
+  });
+
+  it("Should be able to add ingredients to order display", () => {
+    render(<OrderForm />);
+
+    const beansButton = screen.getByText("beans");
+    const steakButton = screen.getByText("steak");
+
+    userEvent.click(beansButton);
+    userEvent.click(steakButton);
+
+    const orderDisplay = screen.getByText("Order: beans, steak");
+
     expect(orderDisplay).toBeInTheDocument();
   });
 });
