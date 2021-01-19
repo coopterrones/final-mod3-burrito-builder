@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 
 class OrderForm extends Component {
-  constructor(props) {
-    super(props);
-    this.props = props;
+  constructor({ submitOrder, filterOrder }) {
+    super({ submitOrder, filterOrder });
+    this.submitOrder = submitOrder;
+    this.filterOrder = filterOrder;
     this.state = {
       name: "",
       ingredients: [],
@@ -22,6 +23,7 @@ class OrderForm extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     this.clearInputs();
+    this.filterOrder(this.state.name, this.state.ingredients);
   };
 
   clearInputs = () => {
