@@ -48,4 +48,14 @@ describe("Order Form", () => {
 
     expect(orderDisplay).toBeInTheDocument();
   });
+
+  it("Should be able to add a name to the name input", () => {
+    render(<OrderForm />);
+
+    const nameInput = screen.getByPlaceholderText("Name");
+
+    userEvent.type(nameInput, "Cooper");
+
+    expect(nameInput).toHaveValue("Cooper");
+  });
 });
